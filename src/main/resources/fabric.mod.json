@@ -33,6 +33,9 @@
 		],
 		"client": [
 			"io.github.chefmooon.playfulplanes.client.PlayfulPlanesClient"
+		],
+		"fabric-datagen": [
+			"io.github.chefmooon.playfulplanes.data.DataGeneration"
 		]
 	}
 }

@@ -20,6 +20,12 @@ dependencies {
 	modImplementation libs.fapi
 }
 
+fabricApi {
+	configureDataGeneration() {
+		client = true
+	}
+}
+
 processResources {
 	final Map<String, String> meta = [
 		version       : version,
