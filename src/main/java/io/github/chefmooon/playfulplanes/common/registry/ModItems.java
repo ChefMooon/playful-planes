@@ -1,6 +1,8 @@
 package io.github.chefmooon.playfulplanes.common.registry;
 
 import io.github.chefmooon.playfulplanes.PlayfulPlanes;
+import io.github.chefmooon.playfulplanes.common.data.PaperPlaneComponent;
+import io.github.chefmooon.playfulplanes.common.data.types.PaperPlaneType;
 import io.github.chefmooon.playfulplanes.common.item.PaperPlaneItem;
 import net.minecraft.item.Item;
 import net.minecraft.registry.Registries;
@@ -13,7 +15,7 @@ import java.util.function.Function;
 
 public class ModItems {
 
-	public static final Item WHITE_PAPER_PLANE = register("white_paper_plane", PaperPlaneItem::new, new Item.Settings());
+	public static final Item WHITE_PAPER_PLANE = register("white_paper_plane", PaperPlaneItem::new, new Item.Settings().component(ModDataComponentTypes.PAPER_PLANE_COMPONENT, new PaperPlaneComponent(PaperPlaneType.BASIC)));
 
 	public static Item register(String name, Function<Item.Settings, Item> itemFactory, Item.Settings settings) {
 		RegistryKey<Item> itemKey = RegistryKey.of(RegistryKeys.ITEM, Identifier.of(PlayfulPlanes.MOD_ID, name));

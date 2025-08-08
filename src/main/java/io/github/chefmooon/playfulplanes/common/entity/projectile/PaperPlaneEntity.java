@@ -1,10 +1,9 @@
 package io.github.chefmooon.playfulplanes.common.entity.projectile;
 
 import io.github.chefmooon.playfulplanes.PlayfulPlanes;
-import io.github.chefmooon.playfulplanes.common.registry.ModDamageSources;
-import io.github.chefmooon.playfulplanes.common.registry.ModEntityTypes;
-import io.github.chefmooon.playfulplanes.common.registry.ModItems;
-import io.github.chefmooon.playfulplanes.common.registry.ModSounds;
+import io.github.chefmooon.playfulplanes.common.data.PaperPlaneComponent;
+import io.github.chefmooon.playfulplanes.common.data.types.PaperPlaneType;
+import io.github.chefmooon.playfulplanes.common.registry.*;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentEffectContext;
 import net.minecraft.enchantment.EnchantmentHelper;
@@ -31,6 +30,7 @@ import org.apache.commons.lang3.mutable.MutableFloat;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Iterator;
+import java.util.Objects;
 
 public class PaperPlaneEntity extends PersistentProjectileEntity {
 	private static final TrackedData<Byte> LOYALTY = DataTracker.registerData(PaperPlaneEntity.class, TrackedDataHandlerRegistry.BYTE);
@@ -39,20 +39,24 @@ public class PaperPlaneEntity extends PersistentProjectileEntity {
 	private static final boolean DEFAULT_DEALT_DAMAGE = false;
 	private boolean dealtDamage = false;
 	public int returnTimer;
+	private static PaperPlaneType paperPlaneType;
 	public PaperPlaneEntity(EntityType<? extends PaperPlaneEntity> entityType, World world) {
 		super(entityType, world);
+		paperPlaneType = PaperPlaneType.BASIC;
 	}
 
 	public PaperPlaneEntity(World world, LivingEntity owner, ItemStack stack) {
 		super(ModEntityTypes.PAPER_PLANE, owner, world, stack, (ItemStack)null);
 		this.dataTracker.set(LOYALTY, this.getLoyalty(stack));
 		this.dataTracker.set(ENCHANTED, stack.hasGlint());
+		paperPlaneType = PaperPlaneType.BASIC;
 	}
 
 	public PaperPlaneEntity(World world, double x, double y, double z, ItemStack stack) {
 		super(ModEntityTypes.PAPER_PLANE, x, y, z, world, stack, stack);
 		this.dataTracker.set(LOYALTY, this.getLoyalty(stack));
 		this.dataTracker.set(ENCHANTED, stack.hasGlint());
+		paperPlaneType = PaperPlaneType.BASIC;
 	}
 
 	protected void initDataTracker(DataTracker.Builder builder) {
@@ -121,6 +125,7 @@ public class PaperPlaneEntity extends PersistentProjectileEntity {
 	@Override
 	protected void onHit(LivingEntity target) {
 		PlayfulPlanes.LOGGER.info("PaperPlane HIT!");
+		PlayfulPlanes.LOGGER.info("Type: {}", this.getPaperPlaneType().asString());
 	}
 
 	@Override
@@ -202,11 +207,13 @@ public class PaperPlaneEntity extends PersistentProjectileEntity {
 		super.readCustomData(view);
 		this.dealtDamage = view.getBoolean("DealtDamage", false);
 		this.dataTracker.set(LOYALTY, this.getLoyalty(this.getItemStack()));
+		this.setPaperPlaneType(Objects.requireNonNull(this.getItemStack().get(ModDataComponentTypes.PAPER_PLANE_COMPONENT)).paperPlaneType());
 	}
 
 	protected void writeCustomData(WriteView view) {
 		super.writeCustomData(view);
 		view.putBoolean("DealtDamage", this.dealtDamage);
+		view.put("type", PaperPlaneType.CODEC, this.getPaperPlaneType());
 	}
 
 	private byte getLoyalty(ItemStack stack) {
@@ -234,5 +241,13 @@ public class PaperPlaneEntity extends PersistentProjectileEntity {
 	@Override
 	public boolean shouldRender(double cameraX, double cameraY, double cameraZ) {
 		return true;
+	}
+
+	public void setPaperPlaneType(PaperPlaneType paperPlaneType) {
+		PaperPlaneEntity.paperPlaneType = paperPlaneType;
+	}
+
+	public PaperPlaneType getPaperPlaneType() {
+		return paperPlaneType;
 	}
 }

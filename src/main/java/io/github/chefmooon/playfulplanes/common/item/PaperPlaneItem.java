@@ -1,6 +1,9 @@
 package io.github.chefmooon.playfulplanes.common.item;
 
+import io.github.chefmooon.playfulplanes.PlayfulPlanes;
+import io.github.chefmooon.playfulplanes.common.data.types.PaperPlaneType;
 import io.github.chefmooon.playfulplanes.common.entity.projectile.PaperPlaneEntity;
+import io.github.chefmooon.playfulplanes.common.registry.ModDataComponentTypes;
 import io.github.chefmooon.playfulplanes.common.registry.ModItems;
 import io.github.chefmooon.playfulplanes.common.registry.ModSounds;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
@@ -8,6 +11,7 @@ import net.minecraft.component.EnchantmentEffectComponentTypes;
 import net.minecraft.component.type.AttributeModifierSlot;
 import net.minecraft.component.type.AttributeModifiersComponent;
 import net.minecraft.component.type.ToolComponent;
+import net.minecraft.component.type.TooltipDisplayComponent;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
@@ -21,19 +25,25 @@ import net.minecraft.item.ItemGroups;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ProjectileItem;
 import net.minecraft.item.consume.UseAction;
+import net.minecraft.item.tooltip.TooltipAppender;
+import net.minecraft.item.tooltip.TooltipType;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.stat.Stats;
+import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Position;
 import net.minecraft.world.World;
 
 import java.util.List;
+import java.util.Objects;
+import java.util.function.Consumer;
 
 public class PaperPlaneItem extends Item implements ProjectileItem {
 	public static final int MIN_DRAW_DURATION = 10;
@@ -106,31 +116,13 @@ public class PaperPlaneItem extends Item implements ProjectileItem {
 	public ProjectileEntity createEntity(World world, Position pos, ItemStack stack, Direction direction) {
 		PaperPlaneEntity paperPlaneEntity = new PaperPlaneEntity(world, pos.getX(), pos.getY(), pos.getZ(), stack.copyWithCount(1));
 		paperPlaneEntity.pickupType = PersistentProjectileEntity.PickupPermission.ALLOWED;
+		paperPlaneEntity.setPaperPlaneType(Objects.requireNonNull(stack.get(ModDataComponentTypes.PAPER_PLANE_COMPONENT)).paperPlaneType());
 		return paperPlaneEntity;
 	}
 
-//	@Override
-//	public ActionResult use(World world, PlayerEntity user, Hand hand) {
-//		ItemStack itemStack = user.getStackInHand(hand);
-//		world.playSound((Entity)null, user.getX(), user.getY(), user.getZ(), SoundEvents.ENTITY_EGG_THROW, SoundCategory.PLAYERS, 0.5F, 0.4F / (world.getRandom().nextFloat() * 0.4F + 0.8F));
-//		if (world instanceof ServerWorld serverWorld) {
-//			ProjectileEntity.spawnWithVelocity((world2, shooter, stack) -> new PaperPlaneEntityNew(user, world, user.getPos().getX(), user.getEyePos().getY(), user.getPos().getZ()), serverWorld, itemStack, user, 0.0F, 1.5F, 1.0F);
-//		}
-//
-//		user.incrementStat(Stats.USED.getOrCreateStat(this));
-//		itemStack.decrementUnlessCreative(1, user);
-//		return ActionResult.SUCCESS;
-//	}
-
-//	@Override
-//	public ProjectileEntity createEntity(World world, Position pos, ItemStack stack, Direction direction) {
-//		Random random = world.getRandom();
-//		double d = random.nextTriangular((double)direction.getOffsetX(), 0.11485000000000001);
-//		double e = random.nextTriangular((double)direction.getOffsetY(), 0.11485000000000001);
-//		double f = random.nextTriangular((double)direction.getOffsetZ(), 0.11485000000000001);
-//		Vec3d vec3d = new Vec3d(d, e, f);
-//		PaperPlaneEntity paperPlaneEntity = new PaperPlaneEntity(world, pos.getX(), pos.getY(), pos.getZ(), vec3d.normalize());
-//		paperPlaneEntity.setItem(stack);
-//		return paperPlaneEntity;
-//	}
+	@Override
+	public void appendTooltip(ItemStack stack, TooltipContext context, TooltipDisplayComponent displayComponent, Consumer<Text> textConsumer, TooltipType type) {
+		PaperPlaneType paperPlaneType = Objects.requireNonNull(stack.get(ModDataComponentTypes.PAPER_PLANE_COMPONENT)).paperPlaneType();
+		textConsumer.accept(Text.literal(paperPlaneType.asString().formatted(Formatting.GRAY)));
+	}
 }
