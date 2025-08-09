@@ -6,13 +6,16 @@ import io.github.chefmooon.playfulplanes.common.entity.projectile.PaperPlaneEnti
 import io.github.chefmooon.playfulplanes.common.registry.ModDataComponentTypes;
 import io.github.chefmooon.playfulplanes.common.registry.ModItems;
 import io.github.chefmooon.playfulplanes.common.registry.ModSounds;
+import net.fabricmc.fabric.api.item.v1.EnchantingContext;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.minecraft.component.EnchantmentEffectComponentTypes;
 import net.minecraft.component.type.AttributeModifierSlot;
 import net.minecraft.component.type.AttributeModifiersComponent;
 import net.minecraft.component.type.ToolComponent;
 import net.minecraft.component.type.TooltipDisplayComponent;
+import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
+import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.attribute.EntityAttributeModifier;
@@ -60,6 +63,14 @@ public class PaperPlaneItem extends Item implements ProjectileItem {
 
 	public static ToolComponent createToolComponent() {
 		return new ToolComponent(List.of(), 1.0F, 2, false);
+	}
+
+	@Override
+	public boolean canBeEnchantedWith(ItemStack stack, RegistryEntry<Enchantment> enchantment, EnchantingContext context) {
+		if (enchantment.matchesKey(Enchantments.IMPALING) || enchantment.matchesKey(Enchantments.CHANNELING) || enchantment.matchesKey(Enchantments.RIPTIDE)) {
+			return false;
+		}
+		return super.canBeEnchantedWith(stack, enchantment, context);
 	}
 
 	public UseAction getUseAction(ItemStack stack) {
