@@ -1,6 +1,0 @@
-{
-	"parent": "minecraft:item/generated",
-	"textures": {
-		"layer0": "playful_planes:item/white_paper_plane"
-	}
-}

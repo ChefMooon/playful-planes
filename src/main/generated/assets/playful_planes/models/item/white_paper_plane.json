@@ -1,0 +1,6 @@
+{
+  "parent": "playful_planes:item/template_paper_plane",
+  "textures": {
+    "layer0": "playful_planes:item/white_paper_plane"
+  }
+}
