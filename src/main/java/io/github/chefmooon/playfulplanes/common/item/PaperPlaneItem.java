@@ -74,7 +74,7 @@ public class PaperPlaneItem extends Item implements ProjectileItem {
 	}
 
 	public UseAction getUseAction(ItemStack stack) {
-		return UseAction.SPEAR; // TODO: add a custom use action for paper planes?
+		return UseAction.SPEAR;
 	}
 
 	public int getMaxUseTime(ItemStack stack, LivingEntity user) {
@@ -95,7 +95,7 @@ public class PaperPlaneItem extends Item implements ProjectileItem {
 					if (world instanceof ServerWorld serverWorld) {
 						stack.damage(1, playerEntity);
 						ItemStack itemStack = stack.splitUnlessCreative(1, playerEntity);
-						PaperPlaneEntity paperPlaneEntity = (PaperPlaneEntity)ProjectileEntity.spawnWithVelocity(PaperPlaneEntity::new, serverWorld, itemStack, playerEntity, 0.0F, 1.5F, 0.5F);
+						PaperPlaneEntity paperPlaneEntity = (PaperPlaneEntity)ProjectileEntity.spawnWithVelocity(PaperPlaneEntity::new, serverWorld, itemStack, playerEntity, 0.0F, 3.0F, 0.5F);
 						if (playerEntity.isInCreativeMode()) {
 							paperPlaneEntity.pickupType = PersistentProjectileEntity.PickupPermission.CREATIVE_ONLY;
 						}
