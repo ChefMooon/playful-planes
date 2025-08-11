@@ -5,7 +5,9 @@ import io.github.chefmooon.playfulplanes.common.util.ModModels;
 import net.fabricmc.fabric.api.client.datagen.v1.provider.FabricModelProvider;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.minecraft.client.data.*;
+import net.minecraft.client.render.item.model.ItemModel;
 import net.minecraft.item.Item;
+import net.minecraft.util.Identifier;
 
 public class ModModelGenerator extends FabricModelProvider {
 	public ModModelGenerator(FabricDataOutput output) {
@@ -23,9 +25,16 @@ public class ModModelGenerator extends FabricModelProvider {
 	}
 
 	public final void registerPaperPlaneItemModel(Item item, ItemModelGenerator itemModelGenerator) {
-		ModModels.TEMPLATE_PAPER_PLANE_ITEM.upload(item,
+		Identifier inHandModel = ModModels.TEMPLATE_PAPER_PLANE_ITEM.upload(item,
 			TextureMap.layer0(item), itemModelGenerator.modelCollector);
-		ModModels.TEMPLATE_PAPER_PLANE_THROWING_ITEM.upload(ModelIds.getItemSubModelId(item, "_throwing"),
+		Identifier inHandThrowingModel = ModModels.TEMPLATE_PAPER_PLANE_THROWING_ITEM.upload(ModelIds.getItemSubModelId(item, "_throwing"),
 			TextureMap.layer0(item), itemModelGenerator.modelCollector);
+
+		ItemModel.Unbaked inHandUnbakedModel = ItemModels.basic(inHandModel);
+		ItemModel.Unbaked inHandThrowingUnbakedModel = ItemModels.basic(inHandThrowingModel);
+
+		ItemModel.Unbaked condition = ItemModels.condition(ItemModels.usingItemProperty(), inHandThrowingUnbakedModel, inHandUnbakedModel);
+
+		itemModelGenerator.output.accept(item, ItemModelGenerator.createModelWithInHandVariant(inHandUnbakedModel, condition));
 	}
 }
