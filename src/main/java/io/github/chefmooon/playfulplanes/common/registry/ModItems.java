@@ -4,6 +4,7 @@ import io.github.chefmooon.playfulplanes.PlayfulPlanes;
 import io.github.chefmooon.playfulplanes.common.data.PaperPlaneComponent;
 import io.github.chefmooon.playfulplanes.common.data.types.PaperPlaneType;
 import io.github.chefmooon.playfulplanes.common.item.PaperPlaneItem;
+import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.WeaponComponent;
 import net.minecraft.item.Item;
@@ -27,6 +28,9 @@ public class ModItems {
 		RegistryKey<Item> itemKey = RegistryKey.of(RegistryKeys.ITEM, Identifier.of(PlayfulPlanes.MOD_ID, name));
 		Item item = itemFactory.apply(settings.registryKey(itemKey));
 		Registry.register(Registries.ITEM, itemKey, item);
+		ItemGroupEvents.modifyEntriesEvent(ModCreativeItemGroups.PLAYFUL_PLANES).register(itemGroup -> {
+			itemGroup.add(item);
+		});
 
 		return item;
 	}

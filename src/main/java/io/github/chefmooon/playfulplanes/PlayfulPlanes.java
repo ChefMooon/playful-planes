@@ -13,6 +13,7 @@ public class PlayfulPlanes implements ModInitializer {
 	public void onInitialize() {
 //		LOGGER.info("[Mod ID] pretty pink princess ponies prancing perpendicular");
 		ModDataComponentTypes.register();
+		ModCreativeItemGroups.register();
 		ModItems.register();
 		ModEntityTypes.register();
 		ModSounds.register();

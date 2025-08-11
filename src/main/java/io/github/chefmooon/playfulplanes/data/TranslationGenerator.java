@@ -18,6 +18,8 @@ public class TranslationGenerator extends FabricLanguageProvider {
 	public void generateTranslations(RegistryWrapper.WrapperLookup wrapperLookup, TranslationBuilder translationBuilder) {
 		String MOD_ID = PlayfulPlanes.MOD_ID;
 
+		translationBuilder.add("itemGroup." + MOD_ID, "Playful Planes");
+
 		translationBuilder.add(ModItems.WHITE_PAPER_PLANE, "White Paper Plane");
 
 		translationBuilder.add("death.attack.playful_planes.paper_plane", "%1$s died from a Paper Plane");
