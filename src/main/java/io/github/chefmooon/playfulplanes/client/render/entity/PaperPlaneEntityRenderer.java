@@ -29,7 +29,7 @@ public class PaperPlaneEntityRenderer extends EntityRenderer<PaperPlaneEntity, P
 
 	public void render(PaperPlaneEntityRenderState paperPlaneEntityRenderState, MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int i) {
 		matrixStack.push();
-		matrixStack.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(paperPlaneEntityRenderState.yaw - 70.0F));
+		matrixStack.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(paperPlaneEntityRenderState.yaw - 65.0F));
 		matrixStack.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(paperPlaneEntityRenderState.pitch + 180.0F));
 		VertexConsumer vertexConsumer = ItemRenderer.getItemGlintConsumer(vertexConsumerProvider, this.model.getLayer(TEXTURE), false, paperPlaneEntityRenderState.enchanted);
 		this.model.render(matrixStack, vertexConsumer, i, OverlayTexture.DEFAULT_UV);
