@@ -13,5 +13,6 @@ public class DataGeneration implements DataGeneratorEntrypoint {
 		FabricTagProvider.BlockTagProvider blockTags = pack.addProvider(BlockTagGenerator::new);
 		pack.addProvider((output, registriesFuture) -> new ItemTagGenerator(output, registriesFuture, blockTags));
 		pack.addProvider(ModModelGenerator::new);
+		pack.addProvider(ModRecipeGenerator::new);
 	}
 }
