@@ -2,6 +2,7 @@ package io.github.chefmooon.playfulplanes.data;
 
 import io.github.chefmooon.playfulplanes.PlayfulPlanes;
 import io.github.chefmooon.playfulplanes.common.registry.ModItems;
+import io.github.chefmooon.playfulplanes.common.tag.ModTags;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricLanguageProvider;
 import net.minecraft.registry.RegistryWrapper;
@@ -20,5 +21,7 @@ public class TranslationGenerator extends FabricLanguageProvider {
 		translationBuilder.add(ModItems.WHITE_PAPER_PLANE, "White Paper Plane");
 
 		translationBuilder.add("death.attack.playful_planes.paper_plane", "%1$s died from a Paper Plane");
+
+		translationBuilder.add(ModTags.PAPER_PLANE, "Paper Planes");
 	}
 }

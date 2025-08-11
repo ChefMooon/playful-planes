@@ -1,4 +1,5 @@
 {
   "death.attack.playful_planes.paper_plane": "%1$s died from a Paper Plane",
-  "item.playful_planes.white_paper_plane": "White Paper Plane"
+  "item.playful_planes.white_paper_plane": "White Paper Plane",
+  "tag.item.playful_planes.paper_plane": "Paper Planes"
 }
