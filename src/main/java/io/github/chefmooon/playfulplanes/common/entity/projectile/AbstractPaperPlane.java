@@ -14,39 +14,36 @@ import net.minecraft.particle.ParticleEffect;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.particle.TintedParticleEffect;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.sound.SoundCategory;
+import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
+import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
 
 public interface AbstractPaperPlane {
-	default void applyBlockOnHit(PaperPlaneComponent paperPlaneComponent, World world, Entity owner, BlockHitResult blockHitResult) {
+	default void applyBlockOnHit(PaperPlaneComponent paperPlaneComponent, World world, Entity owner, BlockHitResult blockHitResult, PaperPlaneEntity paperPlaneEntity) {
 		if (paperPlaneComponent.paperPlaneType() == PaperPlaneType.FIRE) {
 			tryIgniteBlock(world, blockHitResult);
 		} else if (paperPlaneComponent.paperPlaneType() == PaperPlaneType.POTION) {
 			tryPlacePotionEffect(world, paperPlaneComponent, owner, blockHitResult);
+		} else if (paperPlaneComponent.paperPlaneType() == PaperPlaneType.TNT) {
+			tryCreateExplosion(world, paperPlaneComponent, blockHitResult, paperPlaneEntity);
 		}
 	}
 
-	default void applyEntityOnHit(PaperPlaneComponent paperPlaneComponent, Entity entity, Entity owner, EntityHitResult entityHitResult) {
+	default void applyEntityOnHit(PaperPlaneComponent paperPlaneComponent, Entity entity, Entity owner, World world, EntityHitResult entityHitResult, PaperPlaneEntity paperPlaneEntity) {
 		if (paperPlaneComponent.paperPlaneType() == PaperPlaneType.FIRE) {
 			tryIgniteEntity(entity, entityHitResult);
 		} else if (paperPlaneComponent.paperPlaneType() == PaperPlaneType.POTION) {
-			// Handle potion effect application here
-			PotionContentsComponent potionContents = paperPlaneComponent.potionContentsComponent().get();
-			if (paperPlaneComponent.potionContentsComponent().isPresent()) {
-				potionContents.getEffects().forEach((effect) -> {
-					if (entity instanceof LivingEntity livingEntity) {
-						livingEntity.addStatusEffect(effect, owner);
-					}
-				});
-			}
+			tryApplyPotionEffects(paperPlaneComponent, entity, owner);
+		} else if (paperPlaneComponent.paperPlaneType() == PaperPlaneType.TNT) {
+			tryApplyExplosionEffects(paperPlaneComponent, entity, owner, world, entityHitResult, paperPlaneEntity);
 		}
 	}
 
-	// Type: Torch
-	// Hit Block
 	default void tryIgniteBlock(World world, BlockHitResult blockHitResult) {
 		if (world.isClient) return;
 
@@ -56,8 +53,10 @@ public interface AbstractPaperPlane {
 		BlockPos firePos = blockPos.offset(side);
 		BlockState fireBlockState = world.getBlockState(firePos);
 
+		boolean fireDamageEnabled = world instanceof ServerWorld serverWorld && serverWorld.getGameRules().getBoolean(GameRules.FIRE_DAMAGE);
+
 		// TODO change to place fire, paper plane + fire charge
-		if (fireBlockState.isAir()) {
+		if (fireDamageEnabled && fireBlockState.isAir()) {
 			switch (side) {
 			    case UP -> world.setBlockState(firePos, Blocks.FIRE.getDefaultState(), 3);
 			    case DOWN -> world.setBlockState(firePos, Blocks.FIRE.getDefaultState().with(FireBlock.UP, true), 3);
@@ -81,6 +80,19 @@ public interface AbstractPaperPlane {
 			            world.setBlockState(firePos, Blocks.FIRE.getDefaultState().with(FireBlock.EAST, true), 3);
 			        }
 			    }
+			}
+		}
+	}
+
+	default void tryCreateExplosion(World world, PaperPlaneComponent paperPlaneComponent, BlockHitResult blockHitResult, PaperPlaneEntity paperPlaneEntity) {
+		if (world.isClient) return;
+
+		BlockPos blockPos = blockHitResult.getBlockPos();
+
+		if (world instanceof ServerWorld serverWorld) {
+			if (!paperPlaneEntity.dealtDamage() && serverWorld.getGameRules().getBoolean(GameRules.TNT_EXPLODES)) {
+				serverWorld.createExplosion(null, blockPos.getX(), blockPos.getY(), blockPos.getZ(), 0.5F, true, World.ExplosionSourceType.TNT);
+				paperPlaneEntity.setDealtDamage(true);
 			}
 		}
 	}
@@ -117,15 +129,37 @@ public interface AbstractPaperPlane {
 		}
 	}
 
-	// Hit Entity
 	default void tryIgniteEntity(Entity entity, EntityHitResult entityHitResult) {
 		entity.setOnFireFor(2);
+	}
+
+	default void tryApplyPotionEffects(PaperPlaneComponent paperPlaneComponent, Entity entity, Entity owner) {
+		PotionContentsComponent potionContents = paperPlaneComponent.potionContentsComponent().get();
+		if (paperPlaneComponent.potionContentsComponent().isPresent()) {
+			potionContents.getEffects().forEach((effect) -> {
+				if (entity instanceof LivingEntity livingEntity) {
+					livingEntity.addStatusEffect(effect, owner);
+				}
+			});
+		}
+	}
+
+	default void tryApplyExplosionEffects(PaperPlaneComponent paperPlaneComponent, Entity entity, Entity owner, World world, EntityHitResult entityHitResult, PaperPlaneEntity paperPlaneEntity) {
+		if (entity instanceof LivingEntity livingEntity) {
+			BlockPos hitPos = entityHitResult.getEntity().getBlockPos();
+			// TODO: improve direction of knockback
+			if (livingEntity.canTakeDamage()) {
+				livingEntity.takeKnockback(1.0, paperPlaneEntity.lastRenderX, paperPlaneEntity.lastRenderY);
+				if (world instanceof ServerWorld serverWorld) serverWorld.playSound(entity, hitPos, SoundEvents.ENTITY_GENERIC_EXPLODE.value(), SoundCategory.PLAYERS);
+				PlayfulPlanes.LOGGER.info("Can take damage");
+			}
+		}
 	}
 
 	default ParticleEffect getParticleType(PaperPlaneComponent paperPlaneComponent) {
 		PaperPlaneType paperPlaneType = paperPlaneComponent.paperPlaneType();
 		if (paperPlaneType == PaperPlaneType.FIRE) {
-			return ParticleTypes.SMOKE;
+			return ParticleTypes.FLAME;
 		} else if (paperPlaneType == PaperPlaneType.POTION) {
 			if (paperPlaneComponent.potionContentsComponent().isPresent()) {
 				// TODO: figure out how to get SimpleParticleType from potion effects
@@ -133,6 +167,8 @@ public interface AbstractPaperPlane {
 			} else {
 				return ParticleTypes.BUBBLE; // Temp particle, needs to be dynamic based on potion
 			}
+		} else if (paperPlaneType == PaperPlaneType.TNT) {
+			return ParticleTypes.SMOKE;
 		}
 		return null;
 	}

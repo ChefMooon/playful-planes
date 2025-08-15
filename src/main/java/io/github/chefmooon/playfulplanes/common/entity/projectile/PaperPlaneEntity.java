@@ -169,7 +169,7 @@ public class PaperPlaneEntity extends PersistentProjectileEntity implements Abst
 			if (entity instanceof LivingEntity livingEntity) {
 				this.knockback(livingEntity, damageSource);
 				this.onHit(livingEntity);
-				this.applyEntityOnHit(this.getPaperPlaneComponent(), livingEntity, owner, entityHitResult);
+				this.applyEntityOnHit(this.getPaperPlaneComponent(), livingEntity, owner, world, entityHitResult, this);
 			}
 		}
 
@@ -181,7 +181,8 @@ public class PaperPlaneEntity extends PersistentProjectileEntity implements Abst
 	@Override
 	protected void onBlockHit(BlockHitResult blockHitResult) {
 		if (!this.dealtDamage) { // Only apply block hit effects if the plane has not already dealt damage to an entity
-			this.applyBlockOnHit(this.getPaperPlaneComponent(), this.getWorld(), this.getOwner(), blockHitResult);
+
+			this.applyBlockOnHit(this.getPaperPlaneComponent(), this.getWorld(), this.getOwner(), blockHitResult, this);
 		}
 		super.onBlockHit(blockHitResult);
 		// TODO: add onBlockHit effects
@@ -255,6 +256,14 @@ public class PaperPlaneEntity extends PersistentProjectileEntity implements Abst
 			super.age();
 		}
 
+	}
+
+	public boolean dealtDamage() {
+		return this.dealtDamage;
+	}
+
+	public void setDealtDamage(boolean dealtDamage) {
+		this.dealtDamage = dealtDamage;
 	}
 
 	protected float getDragInWater() {
