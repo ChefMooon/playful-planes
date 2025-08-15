@@ -27,7 +27,7 @@ Throw a paper plane with a twist! Combine it with various items to create unique
 ### Durability
 
 - The paper plane takes durability damage each time it is thrown.
-- Breaks after 16 throws.
+- Breaks after 32 throws.
 
 ### Enchantments
 
