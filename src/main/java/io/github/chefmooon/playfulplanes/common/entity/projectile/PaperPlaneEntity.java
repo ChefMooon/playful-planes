@@ -180,7 +180,6 @@ public class PaperPlaneEntity extends PersistentProjectileEntity implements Abst
 
 	@Override
 	protected void onBlockHit(BlockHitResult blockHitResult) {
-		PlayfulPlanes.LOGGER.info("PaperPlane block HIT! Type: {}", this.getPaperPlaneComponent().paperPlaneType().asString());
 		if (!this.dealtDamage) { // Only apply block hit effects if the plane has not already dealt damage to an entity
 			this.applyBlockOnHit(this.getPaperPlaneComponent(), this.getWorld(), this.getOwner(), blockHitResult);
 		}

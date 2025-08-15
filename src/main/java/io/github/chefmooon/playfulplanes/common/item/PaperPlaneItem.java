@@ -97,7 +97,6 @@ public class PaperPlaneItem extends Item implements ProjectileItem {
 						PaperPlaneEntity paperPlaneEntity = ProjectileEntity.spawnWithVelocity(PaperPlaneEntity::new, serverWorld, itemStack, playerEntity, 0.0F, 3.0F, 0.5F);
 						PaperPlaneComponent paperPlaneComponent = Objects.requireNonNull(itemStack.get(ModDataComponentTypes.PAPER_PLANE_COMPONENT));
 						paperPlaneEntity.setPaperPlaneComponent(paperPlaneComponent);
-						PlayfulPlanes.LOGGER.info("Paper plane thrown: {}", paperPlaneComponent.paperPlaneType().asString());
 						if (playerEntity.isInCreativeMode()) {
 							paperPlaneEntity.pickupType = PersistentProjectileEntity.PickupPermission.CREATIVE_ONLY;
 						}
