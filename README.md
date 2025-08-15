@@ -1,19 +1,23 @@
 <!--suppress HtmlDeprecatedTag, XmlDeprecatedElement -->
-<center><img alt="mod preview" src="https://upload.wikimedia.org/wikipedia/commons/7/70/Example.png"/></center>
 
-<center>
-A short quick summary of this mod
-</center>
-
----
-
-A long description of your mod, including 
-- Dot point lists of all features
-
-`path/to/config/files` if you have them
-
-Screenshots of features where possible
+<a href="https://modfest.net/toybox">
+	<img alt="Made for Modfest: Toybox" src="https://raw.githubusercontent.com/ModFest/art/refs/heads/v2/badge/svg/toybox/compact.svg">
+</a>
 
 ---
 
-A footnote for special thanks, credits, and other shoutouts - including "created at modfest" banners.
+TODO: add image here
+
+Adds a throwable paper plane! This is no ordinary paper plane, it can be combined with other items to
+create different effects when thrown.
+
+## Paper Plane
+This can be combined with the following items to create different effects:
+- **Paper Plane + Fire Charge**
+  - Entity Hit: lights entity on fire
+  - Block Hit: lights block on fire
+- **Paper Plane + Potion**
+  - Entity Hit: applies the potion effect
+  - Block Hit: creates the potion effect in a cloud
+
+---
