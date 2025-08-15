@@ -8,16 +8,25 @@
 
 TODO: add image here
 
-Adds a throwable paper plane! This is no ordinary paper plane, it can be combined with other items to
-create different effects when thrown.
+Throw a paper plane with a twist! Combine it with various items to create unique effects when thrown.
 
-## Paper Plane
-This can be combined with the following items to create different effects:
+### Combinations & Effects
+
 - **Paper Plane + Fire Charge**
-  - Entity Hit: lights entity on fire
-  - Block Hit: lights block on fire
+  - *Entity Hit*: Sets the entity on fire
+  - *Block Hit*: Ignites the block
+
 - **Paper Plane + Potion**
-  - Entity Hit: applies the potion effect
-  - Block Hit: creates the potion effect in a cloud
+  - *Entity Hit*: Applies the potion effect to the entity
+  - *Block Hit*: Creates a lingering potion cloud
+
+### Durability
+
+- The paper plane takes durability damage each time it is thrown.
+- Breaks after 16 throws.
+
+### Enchantments
+
+- Can be enchanted with: *Unbreaking*, *Mending*, and *Loyalty*.
 
 ---
