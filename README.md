@@ -20,6 +20,10 @@ Throw a paper plane with a twist! Combine it with various items to create unique
   - *Entity Hit*: Applies the potion effect to the entity
   - *Block Hit*: Creates a lingering potion cloud
 
+- **Paper Plane + TNT**
+  - *Entity Hit*: Deals explosive knock back to the entity
+  - *Block Hit*: Creates a small explosion at the block
+
 ### Durability
 
 - The paper plane takes durability damage each time it is thrown.
