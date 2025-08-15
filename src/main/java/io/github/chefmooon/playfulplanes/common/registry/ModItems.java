@@ -17,7 +17,7 @@ import java.util.function.Function;
 
 public class ModItems {
 
-	public static final Item WHITE_PAPER_PLANE = register("white_paper_plane", PaperPlaneItem::new,
+	public static final Item PAPER_PLANE = register("paper_plane", PaperPlaneItem::new,
 		new Item.Settings().maxDamage(32).attributeModifiers(PaperPlaneItem.createAttributeModifiers())
 			.component(ModDataComponentTypes.PAPER_PLANE_COMPONENT, PaperPlaneComponent.getDefault())
 			.component(DataComponentTypes.TOOL, PaperPlaneItem.createToolComponent()).enchantable(1)

@@ -17,7 +17,7 @@ public class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 
 	@Override
 	protected void configure(RegistryWrapper.WrapperLookup wrapperLookup) {
-		valueLookupBuilder(ModTags.PAPER_PLANE).add(ModItems.WHITE_PAPER_PLANE);
+		valueLookupBuilder(ModTags.PAPER_PLANE).add(ModItems.PAPER_PLANE);
 
 		valueLookupBuilder(ItemTags.DURABILITY_ENCHANTABLE).addTag(ModTags.PAPER_PLANE);
 		valueLookupBuilder(ItemTags.TRIDENT_ENCHANTABLE).addTag(ModTags.PAPER_PLANE);

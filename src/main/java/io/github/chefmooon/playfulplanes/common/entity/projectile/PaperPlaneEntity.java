@@ -213,7 +213,7 @@ public class PaperPlaneEntity extends PersistentProjectileEntity implements Abst
 
 	@Override
 	protected ItemStack getDefaultItemStack() {
-		return new ItemStack(ModItems.WHITE_PAPER_PLANE);
+		return new ItemStack(ModItems.PAPER_PLANE);
 	}
 
 	protected SoundEvent getHitSound() {

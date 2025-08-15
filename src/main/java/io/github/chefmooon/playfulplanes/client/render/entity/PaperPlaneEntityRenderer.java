@@ -19,7 +19,7 @@ import net.minecraft.util.math.RotationAxis;
 
 @Environment(EnvType.CLIENT)
 public class PaperPlaneEntityRenderer extends EntityRenderer<PaperPlaneEntity, PaperPlaneEntityRenderState> {
-	public static final Identifier TEXTURE = Identifier.of(PlayfulPlanes.MOD_ID, "textures/entity/white_paper_plane.png");
+	public static final Identifier TEXTURE = Identifier.of(PlayfulPlanes.MOD_ID, "textures/entity/paper_plane.png");
 	private final PaperPlaneEntityModel model;
 
 	public PaperPlaneEntityRenderer(EntityRendererFactory.Context context) {

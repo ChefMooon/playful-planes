@@ -4,7 +4,6 @@ import io.github.chefmooon.playfulplanes.PlayfulPlanes;
 import io.github.chefmooon.playfulplanes.common.registry.ModItems;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
-import net.minecraft.data.DataOutput;
 import net.minecraft.data.recipe.RecipeExporter;
 import net.minecraft.data.recipe.RecipeGenerator;
 import net.minecraft.data.recipe.ShapedRecipeJsonBuilder;
@@ -26,13 +25,13 @@ public class ModRecipeGenerator extends FabricRecipeProvider {
 		return new RecipeGenerator(wrapperLookup, recipeExporter) {
 			@Override
 			public void generate() {
-				ShapedRecipeJsonBuilder.create(wrapperLookup.getOrThrow(RegistryKeys.ITEM), RecipeCategory.COMBAT, ModItems.WHITE_PAPER_PLANE)
+				ShapedRecipeJsonBuilder.create(wrapperLookup.getOrThrow(RegistryKeys.ITEM), RecipeCategory.COMBAT, ModItems.PAPER_PLANE)
 					.pattern(" A ")
 					.pattern("AAA")
 					.pattern(" A ")
 					.input('A', Items.PAPER)
 					.criterion(RecipeGenerator.hasItem(Items.PAPER), RecipeGenerator.conditionsFromPredicates(ItemPredicate.Builder.create().items(wrapperLookup.getOrThrow(RegistryKeys.ITEM), Items.PAPER)))
-					.offerTo(recipeExporter, RecipeGenerator.getRecipeName(ModItems.WHITE_PAPER_PLANE));
+					.offerTo(recipeExporter, RecipeGenerator.getRecipeName(ModItems.PAPER_PLANE));
 			}
 		};
 	}

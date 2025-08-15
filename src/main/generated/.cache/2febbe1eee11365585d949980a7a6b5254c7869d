@@ -1,5 +1,5 @@
 // 1.21.8	-999999999-01-01T00:00:00	Playful Planes/Model Definitions
-158bcd6116e4b725f795ea14e6f9e7e1b0436fe3 assets/playful_planes/items/white_paper_plane.json
-f83f0995bc8f136cd896fc74a54b693dd271d634 assets/playful_planes/models/item/white_paper_plane.json
-48dec77d570a3a57bd5fc4371878d028f033306b assets/playful_planes/models/item/white_paper_plane_in_hand.json
-3a12944d4449df86e87c0be6887bace2d7329197 assets/playful_planes/models/item/white_paper_plane_throwing.json
+455f23654689f0de90b7fffd7ed0a253245a8816 assets/playful_planes/items/paper_plane.json
+4d526171dcb54e26dec5b5c7996dbc835497eaa3 assets/playful_planes/models/item/paper_plane.json
+6c42dca128842d3ec6ac90bce567cde0c1233207 assets/playful_planes/models/item/paper_plane_in_hand.json
+4b4cbc0d3ab33f1c730a740633271c1ac7e07405 assets/playful_planes/models/item/paper_plane_throwing.json

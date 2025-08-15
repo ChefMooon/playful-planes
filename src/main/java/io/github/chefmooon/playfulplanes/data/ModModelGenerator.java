@@ -7,7 +7,6 @@ import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.minecraft.client.data.*;
 import net.minecraft.client.render.item.model.ItemModel;
 import net.minecraft.item.Item;
-import net.minecraft.util.Identifier;
 
 public class ModModelGenerator extends FabricModelProvider {
 	public ModModelGenerator(FabricDataOutput output) {
@@ -21,7 +20,7 @@ public class ModModelGenerator extends FabricModelProvider {
 
 	@Override
 	public void generateItemModels(ItemModelGenerator itemModelGenerator) {
-		registerPaperPlaneItemModel(ModItems.WHITE_PAPER_PLANE, itemModelGenerator);
+		registerPaperPlaneItemModel(ModItems.PAPER_PLANE, itemModelGenerator);
 	}
 
 	public final void registerPaperPlaneItemModel(Item item, ItemModelGenerator itemModelGenerator) {

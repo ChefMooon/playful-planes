@@ -52,7 +52,7 @@ public class PaperPlaneItem extends Item implements ProjectileItem {
 	public static final float THROW_SPEED = 2.5F;
 	public PaperPlaneItem(Item.Settings settings) {
 		super(settings);
-		ItemGroupEvents.modifyEntriesEvent(ItemGroups.FUNCTIONAL).register((itemGroup) -> itemGroup.add(ModItems.WHITE_PAPER_PLANE));
+		ItemGroupEvents.modifyEntriesEvent(ItemGroups.FUNCTIONAL).register((itemGroup) -> itemGroup.add(ModItems.PAPER_PLANE));
 	}
 
 	public static AttributeModifiersComponent createAttributeModifiers() {

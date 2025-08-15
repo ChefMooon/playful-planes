@@ -20,7 +20,7 @@ public class TranslationGenerator extends FabricLanguageProvider {
 
 		translationBuilder.add("itemGroup." + MOD_ID, "Playful Planes");
 
-		translationBuilder.add(ModItems.WHITE_PAPER_PLANE, "White Paper Plane");
+		translationBuilder.add(ModItems.PAPER_PLANE, "Paper Plane");
 
 		translationBuilder.add("death.attack.playful_planes.paper_plane", "%1$s died from a Paper Plane");
 

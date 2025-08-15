@@ -16,7 +16,7 @@ public class ModCreativeItemGroups {
 	public static void register() {
 		Registry.register(Registries.ITEM_GROUP, PLAYFUL_PLANES,
 			FabricItemGroup.builder()
-				.icon(() -> new ItemStack(ModItems.WHITE_PAPER_PLANE))
+				.icon(() -> new ItemStack(ModItems.PAPER_PLANE))
 				.displayName(Text.translatable("itemGroup." + PlayfulPlanes.MOD_ID))
 				.build());
 	}

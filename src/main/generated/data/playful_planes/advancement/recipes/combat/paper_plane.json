@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "playful_planes:white_paper_plane"
+        "recipe": "playful_planes:paper_plane"
       },
       "trigger": "minecraft:recipe_unlocked"
     }
@@ -26,7 +26,7 @@
   ],
   "rewards": {
     "recipes": [
-      "playful_planes:white_paper_plane"
+      "playful_planes:paper_plane"
     ]
   }
 }
