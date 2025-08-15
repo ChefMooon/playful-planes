@@ -2,5 +2,9 @@
   "death.attack.playful_planes.paper_plane": "%1$s died from a Paper Plane",
   "item.playful_planes.paper_plane": "Paper Plane",
   "itemGroup.playful_planes": "Playful Planes",
+  "playful_planes.paper_plane.type.fire": "Flammable",
+  "playful_planes.paper_plane.type.firework": "Firework",
+  "playful_planes.paper_plane.type.potion": "Potion",
+  "playful_planes.paper_plane.type.tnt": "TNT",
   "tag.item.playful_planes.paper_plane": "Paper Planes"
 }

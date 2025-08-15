@@ -1,5 +1,6 @@
 package io.github.chefmooon.playfulplanes.common.data.types;
 
+import io.github.chefmooon.playfulplanes.PlayfulPlanes;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.codec.PacketCodecs;
@@ -10,11 +11,10 @@ import java.util.function.IntFunction;
 
 public enum PaperPlaneType implements StringIdentifiable {
 	BASIC(0),
-	MESSAGE(1),
-	POTION(2),
-	FIRE(3),
-	FIREWORK(4),
-	TNT(5),
+	POTION(1),
+	FIRE(2),
+	FIREWORK(3),
+	TNT(4),
 	;
 
 	private static final IntFunction<PaperPlaneType> INDEX_MAPPER = ValueLists.createIndexToValueFunction(PaperPlaneType::getIndex, values(), (ValueLists.OutOfBoundsHandling)ValueLists.OutOfBoundsHandling.ZERO);
@@ -29,6 +29,10 @@ public enum PaperPlaneType implements StringIdentifiable {
 
 	public int getIndex() {
 		return index;
+	}
+
+	public String getTranslationKey() {
+		return PlayfulPlanes.MOD_ID + ".paper_plane.type." + asString();
 	}
 
 	@Override

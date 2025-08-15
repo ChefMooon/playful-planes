@@ -135,10 +135,10 @@ public class PaperPlaneItem extends Item implements ProjectileItem {
 
 	@Override
 	public void appendTooltip(ItemStack stack, TooltipContext context, TooltipDisplayComponent displayComponent, Consumer<Text> textConsumer, TooltipType type) {
+		super.appendTooltip(stack, context, displayComponent, textConsumer, type);
 		PaperPlaneComponent paperPlaneComponent = Objects.requireNonNull(stack.get(ModDataComponentTypes.PAPER_PLANE_COMPONENT));
 		if (paperPlaneComponent.paperPlaneType() != null && paperPlaneComponent.paperPlaneType() != PaperPlaneType.BASIC) {
-			// TODO: change this to a translation key
-			textConsumer.accept(Text.literal(paperPlaneComponent.paperPlaneType().asString().formatted(Formatting.GRAY)));
+			textConsumer.accept(Text.translatable(paperPlaneComponent.paperPlaneType().getTranslationKey().formatted(Formatting.GRAY)));
 		}
 		if (paperPlaneComponent.potionContentsComponent().isPresent()) {
 			paperPlaneComponent.potionContentsComponent().get().getEffects().forEach((effect) -> {
