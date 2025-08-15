@@ -18,7 +18,7 @@
       "type": "minecraft:condition",
       "on_false": {
         "type": "minecraft:model",
-        "model": "playful_planes:item/white_paper_plane"
+        "model": "playful_planes:item/white_paper_plane_in_hand"
       },
       "on_true": {
         "type": "minecraft:model",

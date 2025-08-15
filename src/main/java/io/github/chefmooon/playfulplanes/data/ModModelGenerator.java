@@ -25,16 +25,23 @@ public class ModModelGenerator extends FabricModelProvider {
 	}
 
 	public final void registerPaperPlaneItemModel(Item item, ItemModelGenerator itemModelGenerator) {
-		Identifier inHandModel = ModModels.TEMPLATE_PAPER_PLANE_ITEM.upload(item,
-			TextureMap.layer0(item), itemModelGenerator.modelCollector);
-		Identifier inHandThrowingModel = ModModels.TEMPLATE_PAPER_PLANE_THROWING_ITEM.upload(ModelIds.getItemSubModelId(item, "_throwing"),
-			TextureMap.layer0(item), itemModelGenerator.modelCollector);
+//		Identifier inHandModel = ModModels.TEMPLATE_PAPER_PLANE_ITEM.upload(ModelIds.getItemSubModelId(item, "_in_hand"),
+//			TextureMap.layer0(item), itemModelGenerator.modelCollector);
+//		Identifier inHandThrowingModel = ModModels.TEMPLATE_PAPER_PLANE_THROWING_ITEM.upload(ModelIds.getItemSubModelId(item, "_throwing"),
+//			TextureMap.layer0(item), itemModelGenerator.modelCollector);
 
-		ItemModel.Unbaked inHandUnbakedModel = ItemModels.basic(inHandModel);
-		ItemModel.Unbaked inHandThrowingUnbakedModel = ItemModels.basic(inHandThrowingModel);
+		ItemModel.Unbaked unbaked = ItemModels.basic(itemModelGenerator.upload(item, Models.GENERATED));
+		ItemModel.Unbaked inHandUnbakedModel = ItemModels.basic(
+			ModModels.TEMPLATE_PAPER_PLANE_ITEM.upload(ModelIds.getItemSubModelId(item, "_in_hand"),
+				TextureMap.layer0(ModelIds.getItemModelId(item).withSuffixedPath("_in_hand")), itemModelGenerator.modelCollector)
+		);
+		ItemModel.Unbaked inHandThrowingUnbakedModel = ItemModels.basic(
+			ModModels.TEMPLATE_PAPER_PLANE_THROWING_ITEM.upload(ModelIds.getItemSubModelId(item, "_throwing"),
+				TextureMap.layer0(ModelIds.getItemModelId(item).withSuffixedPath("_in_hand")), itemModelGenerator.modelCollector)
+		);
 
 		ItemModel.Unbaked condition = ItemModels.condition(ItemModels.usingItemProperty(), inHandThrowingUnbakedModel, inHandUnbakedModel);
 
-		itemModelGenerator.output.accept(item, ItemModelGenerator.createModelWithInHandVariant(inHandUnbakedModel, condition));
+		itemModelGenerator.output.accept(item, ItemModelGenerator.createModelWithInHandVariant(unbaked, condition));
 	}
 }
