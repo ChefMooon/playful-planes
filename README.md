@@ -6,7 +6,7 @@
 
 ---
 
-TODO: add image here
+<img alt="Paper Plane Banner" src="https://raw.githubusercontent.com/ChefMooon/playful-planes/refs/heads/fabric-1.21.8/img/playful_planes_banner.png">
 
 Throw a paper plane with a twist! Combine it with various items to create unique effects when thrown.
 
