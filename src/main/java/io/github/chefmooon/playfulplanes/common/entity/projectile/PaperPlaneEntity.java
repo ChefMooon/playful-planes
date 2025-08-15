@@ -4,8 +4,6 @@ import io.github.chefmooon.playfulplanes.PlayfulPlanes;
 import io.github.chefmooon.playfulplanes.common.data.PaperPlaneComponent;
 import io.github.chefmooon.playfulplanes.common.data.types.PaperPlaneType;
 import io.github.chefmooon.playfulplanes.common.registry.*;
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.enchantment.EnchantmentEffectContext;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.*;
 import net.minecraft.entity.damage.DamageSource;
@@ -15,7 +13,7 @@ import net.minecraft.entity.data.TrackedDataHandlerRegistry;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.PersistentProjectileEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.registry.entry.RegistryEntry;
+import net.minecraft.particle.ParticleEffect;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundEvent;
@@ -26,43 +24,45 @@ import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
-import org.apache.commons.lang3.mutable.MutableFloat;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Iterator;
 import java.util.Objects;
 
-public class PaperPlaneEntity extends PersistentProjectileEntity {
+public class PaperPlaneEntity extends PersistentProjectileEntity implements AbstractPaperPlane {
 	private static final TrackedData<Byte> LOYALTY = DataTracker.registerData(PaperPlaneEntity.class, TrackedDataHandlerRegistry.BYTE);
 	private static final TrackedData<Boolean> ENCHANTED = DataTracker.registerData(PaperPlaneEntity.class, TrackedDataHandlerRegistry.BOOLEAN);
+	private static final TrackedData<PaperPlaneComponent> PAPER_PLANE_TYPE = DataTracker.registerData(PaperPlaneEntity.class, ModTrackedData.PAPER_PLANE);
 	private static final float DRAG_IN_WATER = 0.99F;
 	private static final boolean DEFAULT_DEALT_DAMAGE = false;
 	private boolean dealtDamage = false;
 	public int returnTimer;
-	private static PaperPlaneType paperPlaneType;
 	public PaperPlaneEntity(EntityType<? extends PaperPlaneEntity> entityType, World world) {
 		super(entityType, world);
-		paperPlaneType = PaperPlaneType.BASIC;
 	}
 
-	public PaperPlaneEntity(World world, LivingEntity owner, ItemStack stack) {
+	public PaperPlaneEntity(World world, LivingEntity owner, ItemStack stack, PaperPlaneType type) {
 		super(ModEntityTypes.PAPER_PLANE, owner, world, stack, (ItemStack)null);
 		this.dataTracker.set(LOYALTY, this.getLoyalty(stack));
 		this.dataTracker.set(ENCHANTED, stack.hasGlint());
-		paperPlaneType = PaperPlaneType.BASIC;
+		this.dataTracker.set(PAPER_PLANE_TYPE, PaperPlaneComponent.getDefault());
+	}
+
+	public PaperPlaneEntity(World world, LivingEntity owner, ItemStack stack) {
+		this(world, owner, stack, PaperPlaneType.BASIC);
 	}
 
 	public PaperPlaneEntity(World world, double x, double y, double z, ItemStack stack) {
 		super(ModEntityTypes.PAPER_PLANE, x, y, z, world, stack, stack);
 		this.dataTracker.set(LOYALTY, this.getLoyalty(stack));
 		this.dataTracker.set(ENCHANTED, stack.hasGlint());
-		paperPlaneType = PaperPlaneType.BASIC;
+		this.dataTracker.set(PAPER_PLANE_TYPE, PaperPlaneComponent.getDefault());
 	}
 
 	protected void initDataTracker(DataTracker.Builder builder) {
 		super.initDataTracker(builder);
 		builder.add(LOYALTY, (byte)0);
 		builder.add(ENCHANTED, false);
+		builder.add(PAPER_PLANE_TYPE, PaperPlaneComponent.getDefault());
 	}
 
 	public void tick() {
@@ -101,7 +101,26 @@ public class PaperPlaneEntity extends PersistentProjectileEntity {
 			}
 		}
 
+		if (this.getWorld().isClient) {
+			if (this.isInGround()) {
+				if (this.inGroundTime % 5 == 0) {
+					this.spawnParticles(1);
+				}
+			} else {
+				this.spawnParticles(2);
+			}
+		}
+
 		super.tick();
+	}
+
+	protected void spawnParticles(int amount) {
+		if (amount > 0) {
+			for(int j = 0; j < amount; ++j) {
+				ParticleEffect particleEffect = getParticleType(this.getPaperPlaneComponent());
+				if (particleEffect != null) this.getWorld().addParticleClient(particleEffect, this.getParticleX(0.5), this.getRandomBodyY(), this.getParticleZ(0.5), 0.0, 0.0, 0.0);
+			}
+		}
 	}
 
 	private boolean isOwnerAlive() {
@@ -124,8 +143,7 @@ public class PaperPlaneEntity extends PersistentProjectileEntity {
 
 	@Override
 	protected void onHit(LivingEntity target) {
-		PlayfulPlanes.LOGGER.info("PaperPlane HIT!");
-		PlayfulPlanes.LOGGER.info("Type: {}", this.getPaperPlaneType().asString());
+//		PlayfulPlanes.LOGGER.info("PaperPlane entity HIT! Type: {}", this.getPaperPlaneType().asString());
 	}
 
 	@Override
@@ -151,6 +169,7 @@ public class PaperPlaneEntity extends PersistentProjectileEntity {
 			if (entity instanceof LivingEntity livingEntity) {
 				this.knockback(livingEntity, damageSource);
 				this.onHit(livingEntity);
+				this.applyEntityOnHit(this.getPaperPlaneComponent(), livingEntity, owner, entityHitResult);
 			}
 		}
 
@@ -161,6 +180,10 @@ public class PaperPlaneEntity extends PersistentProjectileEntity {
 
 	@Override
 	protected void onBlockHit(BlockHitResult blockHitResult) {
+		PlayfulPlanes.LOGGER.info("PaperPlane block HIT! Type: {}", this.getPaperPlaneComponent().paperPlaneType().asString());
+		if (!this.dealtDamage) { // Only apply block hit effects if the plane has not already dealt damage to an entity
+			this.applyBlockOnHit(this.getPaperPlaneComponent(), this.getWorld(), this.getOwner(), blockHitResult);
+		}
 		super.onBlockHit(blockHitResult);
 		// TODO: add onBlockHit effects
 	}
@@ -207,13 +230,14 @@ public class PaperPlaneEntity extends PersistentProjectileEntity {
 		super.readCustomData(view);
 		this.dealtDamage = view.getBoolean("DealtDamage", false);
 		this.dataTracker.set(LOYALTY, this.getLoyalty(this.getItemStack()));
-		this.setPaperPlaneType(Objects.requireNonNull(this.getItemStack().get(ModDataComponentTypes.PAPER_PLANE_COMPONENT)).paperPlaneType());
+		this.dataTracker.set(PAPER_PLANE_TYPE, this.getItemStack().get(ModDataComponentTypes.PAPER_PLANE_COMPONENT));
+		this.setPaperPlaneComponent(Objects.requireNonNull(this.getItemStack().get(ModDataComponentTypes.PAPER_PLANE_COMPONENT)));
 	}
 
 	protected void writeCustomData(WriteView view) {
 		super.writeCustomData(view);
 		view.putBoolean("DealtDamage", this.dealtDamage);
-		view.put("type", PaperPlaneType.CODEC, this.getPaperPlaneType());
+		view.put("type", PaperPlaneType.CODEC, this.getPaperPlaneComponent().paperPlaneType());
 	}
 
 	private byte getLoyalty(ItemStack stack) {
@@ -243,11 +267,11 @@ public class PaperPlaneEntity extends PersistentProjectileEntity {
 		return true;
 	}
 
-	public void setPaperPlaneType(PaperPlaneType paperPlaneType) {
-		PaperPlaneEntity.paperPlaneType = paperPlaneType;
+	public void setPaperPlaneComponent(PaperPlaneComponent paperPlaneComponent) {
+		this.dataTracker.set(PAPER_PLANE_TYPE, paperPlaneComponent);
 	}
 
-	public PaperPlaneType getPaperPlaneType() {
-		return paperPlaneType;
+	public PaperPlaneComponent getPaperPlaneComponent() {
+		return this.dataTracker.get(PAPER_PLANE_TYPE);
 	}
 }

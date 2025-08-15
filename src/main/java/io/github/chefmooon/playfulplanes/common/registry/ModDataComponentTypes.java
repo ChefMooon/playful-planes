@@ -7,8 +7,8 @@ import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 
 public class ModDataComponentTypes {
-	public static final ComponentType<PaperPlaneComponent> PAPER_PLANE_COMPONENT = register("paper_plane",
-		ComponentType.<PaperPlaneComponent>builder().codec(PaperPlaneComponent.CODEC).build());
+	public static final ComponentType<PaperPlaneComponent> PAPER_PLANE_COMPONENT = register("paper_plane_data",
+		ComponentType.<PaperPlaneComponent>builder().codec(PaperPlaneComponent.CODEC).packetCodec(PaperPlaneComponent.PACKET_CODEC).build());
 
 	private static <T> ComponentType<T> register(String name, ComponentType<T> componentType) {
 		return Registry.register(Registries.DATA_COMPONENT_TYPE, TextUtils.res(name), componentType);

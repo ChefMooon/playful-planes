@@ -2,7 +2,6 @@ package io.github.chefmooon.playfulplanes.common.registry;
 
 import io.github.chefmooon.playfulplanes.PlayfulPlanes;
 import io.github.chefmooon.playfulplanes.common.data.PaperPlaneComponent;
-import io.github.chefmooon.playfulplanes.common.data.types.PaperPlaneType;
 import io.github.chefmooon.playfulplanes.common.item.PaperPlaneItem;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.minecraft.component.DataComponentTypes;
@@ -20,7 +19,7 @@ public class ModItems {
 
 	public static final Item WHITE_PAPER_PLANE = register("white_paper_plane", PaperPlaneItem::new,
 		new Item.Settings().maxDamage(100).attributeModifiers(PaperPlaneItem.createAttributeModifiers())
-			.component(ModDataComponentTypes.PAPER_PLANE_COMPONENT, new PaperPlaneComponent(PaperPlaneType.BASIC))
+			.component(ModDataComponentTypes.PAPER_PLANE_COMPONENT, PaperPlaneComponent.getDefault())
 			.component(DataComponentTypes.TOOL, PaperPlaneItem.createToolComponent()).enchantable(1)
 			.component(DataComponentTypes.WEAPON, new WeaponComponent(1)));
 

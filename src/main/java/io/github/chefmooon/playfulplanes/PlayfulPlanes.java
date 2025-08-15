@@ -15,6 +15,7 @@ public class PlayfulPlanes implements ModInitializer {
 		ModDataComponentTypes.register();
 		ModCreativeItemGroups.register();
 		ModItems.register();
+		ModTrackedData.register();
 		ModEntityTypes.register();
 		ModSounds.register();
 		ModDamageSources.register();

@@ -1,25 +1,24 @@
 package io.github.chefmooon.playfulplanes.common.item;
 
 import io.github.chefmooon.playfulplanes.PlayfulPlanes;
-import io.github.chefmooon.playfulplanes.common.data.types.PaperPlaneType;
+import io.github.chefmooon.playfulplanes.common.data.PaperPlaneComponent;
 import io.github.chefmooon.playfulplanes.common.entity.projectile.PaperPlaneEntity;
 import io.github.chefmooon.playfulplanes.common.registry.ModDataComponentTypes;
 import io.github.chefmooon.playfulplanes.common.registry.ModItems;
 import io.github.chefmooon.playfulplanes.common.registry.ModSounds;
 import net.fabricmc.fabric.api.item.v1.EnchantingContext;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
-import net.minecraft.component.EnchantmentEffectComponentTypes;
 import net.minecraft.component.type.AttributeModifierSlot;
 import net.minecraft.component.type.AttributeModifiersComponent;
 import net.minecraft.component.type.ToolComponent;
 import net.minecraft.component.type.TooltipDisplayComponent;
 import net.minecraft.enchantment.Enchantment;
-import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.attribute.EntityAttributeModifier;
 import net.minecraft.entity.attribute.EntityAttributes;
+import net.minecraft.entity.effect.StatusEffectUtil;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.PersistentProjectileEntity;
 import net.minecraft.entity.projectile.ProjectileEntity;
@@ -28,14 +27,12 @@ import net.minecraft.item.ItemGroups;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ProjectileItem;
 import net.minecraft.item.consume.UseAction;
-import net.minecraft.item.tooltip.TooltipAppender;
 import net.minecraft.item.tooltip.TooltipType;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
-import net.minecraft.sound.SoundEvent;
-import net.minecraft.sound.SoundEvents;
 import net.minecraft.stat.Stats;
+import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Formatting;
@@ -95,14 +92,18 @@ public class PaperPlaneItem extends Item implements ProjectileItem {
 					if (world instanceof ServerWorld serverWorld) {
 						stack.damage(1, playerEntity);
 						ItemStack itemStack = stack.splitUnlessCreative(1, playerEntity);
-						PaperPlaneEntity paperPlaneEntity = (PaperPlaneEntity)ProjectileEntity.spawnWithVelocity(PaperPlaneEntity::new, serverWorld, itemStack, playerEntity, 0.0F, 3.0F, 0.5F);
+
+						PaperPlaneEntity paperPlaneEntity = ProjectileEntity.spawnWithVelocity(PaperPlaneEntity::new, serverWorld, itemStack, playerEntity, 0.0F, 3.0F, 0.5F);
+						PaperPlaneComponent paperPlaneComponent = Objects.requireNonNull(itemStack.get(ModDataComponentTypes.PAPER_PLANE_COMPONENT));
+						paperPlaneEntity.setPaperPlaneComponent(paperPlaneComponent);
+						PlayfulPlanes.LOGGER.info("Paper plane thrown: {}", paperPlaneComponent.paperPlaneType().asString());
 						if (playerEntity.isInCreativeMode()) {
 							paperPlaneEntity.pickupType = PersistentProjectileEntity.PickupPermission.CREATIVE_ONLY;
 						}
-
-						// TODO: does sound change based on enchantment?
-//							world.playSoundFromEntity((Entity)null, paperPlaneEntity, (SoundEvent)registryEntry.value(), SoundCategory.PLAYERS, 1.0F, 1.0F);
 						world.playSoundFromEntity((Entity)null, paperPlaneEntity, ModSounds.ENTITY_PAPER_PLANE_THROW, SoundCategory.PLAYERS, 1.0F, 1.0F);
+
+						// TODO: does sound change based on enchantment? below is legacy sound code. see above RegistryEntry<SoundEvent>
+//							world.playSoundFromEntity((Entity)null, paperPlaneEntity, (SoundEvent)registryEntry.value(), SoundCategory.PLAYERS, 1.0F, 1.0F);
 						return true;
 					}
 				}
@@ -127,13 +128,27 @@ public class PaperPlaneItem extends Item implements ProjectileItem {
 	public ProjectileEntity createEntity(World world, Position pos, ItemStack stack, Direction direction) {
 		PaperPlaneEntity paperPlaneEntity = new PaperPlaneEntity(world, pos.getX(), pos.getY(), pos.getZ(), stack.copyWithCount(1));
 		paperPlaneEntity.pickupType = PersistentProjectileEntity.PickupPermission.ALLOWED;
-		paperPlaneEntity.setPaperPlaneType(Objects.requireNonNull(stack.get(ModDataComponentTypes.PAPER_PLANE_COMPONENT)).paperPlaneType());
+		paperPlaneEntity.setPaperPlaneComponent(Objects.requireNonNull(stack.get(ModDataComponentTypes.PAPER_PLANE_COMPONENT)));
 		return paperPlaneEntity;
 	}
 
 	@Override
 	public void appendTooltip(ItemStack stack, TooltipContext context, TooltipDisplayComponent displayComponent, Consumer<Text> textConsumer, TooltipType type) {
-		PaperPlaneType paperPlaneType = Objects.requireNonNull(stack.get(ModDataComponentTypes.PAPER_PLANE_COMPONENT)).paperPlaneType();
-		textConsumer.accept(Text.literal(paperPlaneType.asString().formatted(Formatting.GRAY)));
+		PaperPlaneComponent paperPlaneComponent = Objects.requireNonNull(stack.get(ModDataComponentTypes.PAPER_PLANE_COMPONENT));
+		if (paperPlaneComponent.paperPlaneType() != null) {
+			textConsumer.accept(Text.literal(paperPlaneComponent.paperPlaneType().asString().formatted(Formatting.GRAY)));
+		}
+		if (paperPlaneComponent.potionContentsComponent().isPresent()) {
+			paperPlaneComponent.potionContentsComponent().get().getEffects().forEach((effect) -> {
+				MutableText effectText = Text.translatable(effect.getTranslationKey());
+				if (effect.getAmplifier() > 0) {
+					effectText = Text.translatable("potion.withAmplifier", effectText, Text.translatable("potion.potency." + effect.getAmplifier()));
+				}
+				if (effect.getDuration() > 20) {
+					effectText = Text.translatable("potion.withDuration", effectText, StatusEffectUtil.getDurationText(effect, 1.0F, context.getUpdateTickRate()));
+				}
+				textConsumer.accept(effectText.formatted(effect.getEffectType().value().getCategory().getFormatting()));
+			});
+		}
 	}
 }
