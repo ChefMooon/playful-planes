@@ -1,6 +1,5 @@
 package io.github.chefmooon.playfulplanes.common.entity.projectile;
 
-import io.github.chefmooon.playfulplanes.PlayfulPlanes;
 import io.github.chefmooon.playfulplanes.common.data.PaperPlaneComponent;
 import io.github.chefmooon.playfulplanes.common.data.types.PaperPlaneType;
 import io.github.chefmooon.playfulplanes.common.registry.*;
@@ -139,11 +138,6 @@ public class PaperPlaneEntity extends PersistentProjectileEntity implements Abst
 	@Nullable
 	protected EntityHitResult getEntityCollision(Vec3d currentPosition, Vec3d nextPosition) {
 		return this.dealtDamage ? null : super.getEntityCollision(currentPosition, nextPosition);
-	}
-
-	@Override
-	protected void onHit(LivingEntity target) {
-//		PlayfulPlanes.LOGGER.info("PaperPlane entity HIT! Type: {}", this.getPaperPlaneType().asString());
 	}
 
 	@Override

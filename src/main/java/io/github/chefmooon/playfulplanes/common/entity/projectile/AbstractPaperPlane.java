@@ -146,13 +146,11 @@ public interface AbstractPaperPlane {
 
 	default void tryApplyExplosionEffects(PaperPlaneComponent paperPlaneComponent, Entity entity, Entity owner, World world, EntityHitResult entityHitResult, PaperPlaneEntity paperPlaneEntity) {
 		if (entity instanceof LivingEntity livingEntity) {
-			BlockPos hitPos = entityHitResult.getEntity().getBlockPos();
+			BlockPos hitPos = new BlockPos((int) entityHitResult.getPos().getX(), (int) entityHitResult.getPos().getY(), (int) entityHitResult.getPos().getZ());
 			// TODO: improve direction of knockback
-			if (livingEntity.canTakeDamage()) {
-				livingEntity.takeKnockback(1.0, paperPlaneEntity.lastRenderX, paperPlaneEntity.lastRenderY);
-				if (world instanceof ServerWorld serverWorld) serverWorld.playSound(entity, hitPos, SoundEvents.ENTITY_GENERIC_EXPLODE.value(), SoundCategory.PLAYERS);
-				PlayfulPlanes.LOGGER.info("Can take damage");
-			}
+			livingEntity.takeKnockback(1.0, paperPlaneEntity.lastRenderX, paperPlaneEntity.lastRenderY);
+
+			if (world instanceof ServerWorld serverWorld) serverWorld.playSound(entity, hitPos, SoundEvents.ENTITY_GENERIC_EXPLODE.value(), SoundCategory.PLAYERS);
 		}
 	}
 
@@ -162,10 +160,7 @@ public interface AbstractPaperPlane {
 			return ParticleTypes.FLAME;
 		} else if (paperPlaneType == PaperPlaneType.POTION) {
 			if (paperPlaneComponent.potionContentsComponent().isPresent()) {
-				// TODO: figure out how to get SimpleParticleType from potion effects
 				return TintedParticleEffect.create(ParticleTypes.ENTITY_EFFECT, paperPlaneComponent.potionContentsComponent().get().getColor());
-			} else {
-				return ParticleTypes.BUBBLE; // Temp particle, needs to be dynamic based on potion
 			}
 		} else if (paperPlaneType == PaperPlaneType.TNT) {
 			return ParticleTypes.SMOKE;
