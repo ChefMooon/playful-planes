@@ -1,21 +1,18 @@
 package io.github.chefmooon.playfulplanes.common.data.types;
 
-import com.mojang.serialization.Codec;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.codec.PacketCodecs;
-import net.minecraft.util.DyeColor;
 import net.minecraft.util.StringIdentifiable;
 import net.minecraft.util.function.ValueLists;
 
-import java.util.Locale;
 import java.util.function.IntFunction;
 
 public enum PaperPlaneType implements StringIdentifiable {
 	BASIC(0),
 	MESSAGE(1),
 	POTION(2),
-	TORCH(3),
+	FIRE(3),
 	FIREWORK(4),
 	TNT(5),
 	;

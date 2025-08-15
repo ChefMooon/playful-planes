@@ -5,8 +5,7 @@ import io.github.chefmooon.playfulplanes.common.data.PaperPlaneComponent;
 import io.github.chefmooon.playfulplanes.common.data.types.PaperPlaneType;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
-import net.minecraft.block.SideShapeType;
-import net.minecraft.block.WallTorchBlock;
+import net.minecraft.block.FireBlock;
 import net.minecraft.component.type.PotionContentsComponent;
 import net.minecraft.entity.AreaEffectCloudEntity;
 import net.minecraft.entity.Entity;
@@ -22,55 +21,68 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 
 public interface AbstractPaperPlane {
-	// TODO: Remove logger calls in production code
 	default void applyBlockOnHit(PaperPlaneComponent paperPlaneComponent, World world, Entity owner, BlockHitResult blockHitResult) {
-		if (paperPlaneComponent.paperPlaneType() == PaperPlaneType.TORCH) {
-			tryPlaceTorch(world, blockHitResult);
+		if (paperPlaneComponent.paperPlaneType() == PaperPlaneType.FIRE) {
+			tryIgniteBlock(world, blockHitResult);
 		} else if (paperPlaneComponent.paperPlaneType() == PaperPlaneType.POTION) {
 			tryPlacePotionEffect(world, paperPlaneComponent, owner, blockHitResult);
 		}
 	}
 
 	default void applyEntityOnHit(PaperPlaneComponent paperPlaneComponent, Entity entity, Entity owner, EntityHitResult entityHitResult) {
-		if (paperPlaneComponent.paperPlaneType() == PaperPlaneType.TORCH) {
+		if (paperPlaneComponent.paperPlaneType() == PaperPlaneType.FIRE) {
 			tryIgniteEntity(entity, entityHitResult);
-			PlayfulPlanes.LOGGER.info("Applied torch effect to entity: {}", entity.getName().getString());
 		} else if (paperPlaneComponent.paperPlaneType() == PaperPlaneType.POTION) {
 			// Handle potion effect application here
 			PotionContentsComponent potionContents = paperPlaneComponent.potionContentsComponent().get();
-			PlayfulPlanes.LOGGER.info("potionContents: {}", potionContents);
 			if (paperPlaneComponent.potionContentsComponent().isPresent()) {
 				potionContents.getEffects().forEach((effect) -> {
 					if (entity instanceof LivingEntity livingEntity) {
 						livingEntity.addStatusEffect(effect, owner);
 					}
-					PlayfulPlanes.LOGGER.info("Applied {} | {} effect to entity: {}", effect.getTranslationKey(), effect.getDuration(), entity.getName().getString());
 				});
-			} else {
-				PlayfulPlanes.LOGGER.warn("No potion effects to apply to entity: {}", entity.getName().getString());
 			}
 		}
 	}
 
 	// Type: Torch
 	// Hit Block
-	default void tryPlaceTorch(World world, BlockHitResult blockHitResult) {
+	default void tryIgniteBlock(World world, BlockHitResult blockHitResult) {
 		if (world.isClient) return;
 
 		Direction side = blockHitResult.getSide();
 		BlockPos blockPos = blockHitResult.getBlockPos();
-		BlockPos torchPos = blockPos.offset(side);
 		BlockState blockState = world.getBlockState(blockPos);
+		BlockPos firePos = blockPos.offset(side);
+		BlockState fireBlockState = world.getBlockState(firePos);
 
 		// TODO change to place fire, paper plane + fire charge
-		if (!blockState.isAir() && world.getBlockState(torchPos).isAir()) {
-			if (side == Direction.UP) {
-				world.setBlockState(torchPos, Blocks.TORCH.getDefaultState(), 3);
-			} else if (side.getAxis().isHorizontal() && blockState.isSideSolid(world, blockPos, side.getOpposite(), SideShapeType.CENTER)) {
-				world.setBlockState(torchPos, Blocks.WALL_TORCH.getDefaultState().with(WallTorchBlock.FACING, side), 3);
+		if (fireBlockState.isAir()) {
+			switch (side) {
+			    case UP -> world.setBlockState(firePos, Blocks.FIRE.getDefaultState(), 3);
+			    case DOWN -> world.setBlockState(firePos, Blocks.FIRE.getDefaultState().with(FireBlock.UP, true), 3);
+			    case NORTH -> {
+			        if (blockState.isSideSolidFullSquare(world, blockPos, Direction.NORTH)) {
+			            world.setBlockState(firePos, Blocks.FIRE.getDefaultState().with(FireBlock.SOUTH, true), 3);
+			        }
+			    }
+			    case EAST -> {
+			        if (blockState.isSideSolidFullSquare(world, blockPos, Direction.EAST)) {
+			            world.setBlockState(firePos, Blocks.FIRE.getDefaultState().with(FireBlock.WEST, true), 3);
+			        }
+			    }
+			    case SOUTH -> {
+			        if (blockState.isSideSolidFullSquare(world, blockPos, Direction.SOUTH)) {
+			            world.setBlockState(firePos, Blocks.FIRE.getDefaultState().with(FireBlock.NORTH, true), 3);
+			        }
+			    }
+			    case WEST -> {
+			        if (blockState.isSideSolidFullSquare(world, blockPos, Direction.WEST)) {
+			            world.setBlockState(firePos, Blocks.FIRE.getDefaultState().with(FireBlock.EAST, true), 3);
+			        }
+			    }
 			}
 		}
-		PlayfulPlanes.LOGGER.info("Placed torch at block position: {} facing: {}", blockPos, side);
 	}
 
 	default void tryPlacePotionEffect(World world, PaperPlaneComponent paperPlaneComponent, Entity owner, BlockHitResult blockHitResult) {
@@ -112,7 +124,7 @@ public interface AbstractPaperPlane {
 
 	default ParticleEffect getParticleType(PaperPlaneComponent paperPlaneComponent) {
 		PaperPlaneType paperPlaneType = paperPlaneComponent.paperPlaneType();
-		if (paperPlaneType == PaperPlaneType.TORCH) {
+		if (paperPlaneType == PaperPlaneType.FIRE) {
 			return ParticleTypes.SMOKE;
 		} else if (paperPlaneType == PaperPlaneType.POTION) {
 			if (paperPlaneComponent.potionContentsComponent().isPresent()) {
