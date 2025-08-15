@@ -2,6 +2,7 @@ package io.github.chefmooon.playfulplanes.common.item;
 
 import io.github.chefmooon.playfulplanes.PlayfulPlanes;
 import io.github.chefmooon.playfulplanes.common.data.PaperPlaneComponent;
+import io.github.chefmooon.playfulplanes.common.data.types.PaperPlaneType;
 import io.github.chefmooon.playfulplanes.common.entity.projectile.PaperPlaneEntity;
 import io.github.chefmooon.playfulplanes.common.registry.ModDataComponentTypes;
 import io.github.chefmooon.playfulplanes.common.registry.ModItems;
@@ -135,7 +136,8 @@ public class PaperPlaneItem extends Item implements ProjectileItem {
 	@Override
 	public void appendTooltip(ItemStack stack, TooltipContext context, TooltipDisplayComponent displayComponent, Consumer<Text> textConsumer, TooltipType type) {
 		PaperPlaneComponent paperPlaneComponent = Objects.requireNonNull(stack.get(ModDataComponentTypes.PAPER_PLANE_COMPONENT));
-		if (paperPlaneComponent.paperPlaneType() != null) {
+		if (paperPlaneComponent.paperPlaneType() != null && paperPlaneComponent.paperPlaneType() != PaperPlaneType.BASIC) {
+			// TODO: change this to a translation key
 			textConsumer.accept(Text.literal(paperPlaneComponent.paperPlaneType().asString().formatted(Formatting.GRAY)));
 		}
 		if (paperPlaneComponent.potionContentsComponent().isPresent()) {
