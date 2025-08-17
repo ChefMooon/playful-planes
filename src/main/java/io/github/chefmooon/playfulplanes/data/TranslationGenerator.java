@@ -28,7 +28,7 @@ public class TranslationGenerator extends FabricLanguageProvider {
 		translationBuilder.add(PAPER_PLANE_TYPE + "firework", "Firework");
 		translationBuilder.add(PAPER_PLANE_TYPE + "tnt", "TNT");
 
-		translationBuilder.add("death.attack.playful_planes.paper_plane", "%1$s died from a Paper Plane");
+		translationBuilder.add("death.attack.playful_planes.paper_plane", "%1$s failed the paper plane safety test");
 
 		translationBuilder.add(ModTags.PAPER_PLANE, "Paper Planes");
 	}

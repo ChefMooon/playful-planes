@@ -1,5 +1,5 @@
 {
-  "death.attack.playful_planes.paper_plane": "%1$s died from a Paper Plane",
+  "death.attack.playful_planes.paper_plane": "%1$s failed the paper plane safety test",
   "item.playful_planes.paper_plane": "Paper Plane",
   "itemGroup.playful_planes": "Playful Planes",
   "playful_planes.paper_plane.type.fire": "Flammable",
