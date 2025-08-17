@@ -9,6 +9,7 @@ import io.github.chefmooon.playfulplanes.common.registry.ModItems;
 import io.github.chefmooon.playfulplanes.common.registry.ModSounds;
 import net.fabricmc.fabric.api.item.v1.EnchantingContext;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
+import net.minecraft.block.DispenserBlock;
 import net.minecraft.component.type.AttributeModifierSlot;
 import net.minecraft.component.type.AttributeModifiersComponent;
 import net.minecraft.component.type.ToolComponent;
@@ -40,6 +41,7 @@ import net.minecraft.util.Formatting;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Position;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
 import java.util.List;
@@ -152,5 +154,11 @@ public class PaperPlaneItem extends Item implements ProjectileItem {
 				textConsumer.accept(effectText.formatted(effect.getEffectType().value().getCategory().getFormatting()));
 			});
 		}
+	}
+
+	public ProjectileItem.Settings getProjectileSettings() {
+		return ProjectileItem.Settings.builder().positionFunction((pointer, facing) -> {
+			return DispenserBlock.getOutputLocation(pointer, 1.0, Vec3d.ZERO);
+		}).uncertainty(0.05F).power(2.0F).overrideDispenseEvent(1051).build();
 	}
 }

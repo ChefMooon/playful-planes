@@ -1,5 +1,6 @@
 package io.github.chefmooon.playfulplanes;
 
+import io.github.chefmooon.playfulplanes.common.CommonSetup;
 import io.github.chefmooon.playfulplanes.common.registry.*;
 import net.fabricmc.api.ModInitializer;
 import org.slf4j.Logger;
@@ -11,7 +12,6 @@ public class PlayfulPlanes implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
-//		LOGGER.info("[Mod ID] pretty pink princess ponies prancing perpendicular");
 		ModDataComponentTypes.register();
 		ModCreativeItemGroups.register();
 		ModItems.register();
@@ -19,5 +19,7 @@ public class PlayfulPlanes implements ModInitializer {
 		ModEntityTypes.register();
 		ModSounds.register();
 		ModDamageSources.register();
+
+		CommonSetup.init();
 	}
 }
