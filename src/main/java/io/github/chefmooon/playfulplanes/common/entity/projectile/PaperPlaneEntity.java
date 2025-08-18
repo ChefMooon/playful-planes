@@ -175,11 +175,9 @@ public class PaperPlaneEntity extends PersistentProjectileEntity implements Abst
 	@Override
 	protected void onBlockHit(BlockHitResult blockHitResult) {
 		if (!this.dealtDamage) { // Only apply block hit effects if the plane has not already dealt damage to an entity
-
 			this.applyBlockOnHit(this.getPaperPlaneComponent(), this.getWorld(), this.getOwner(), blockHitResult, this);
 		}
 		super.onBlockHit(blockHitResult);
-		// TODO: add onBlockHit effects
 	}
 
 	protected void onBlockHitEnchantmentEffects(ServerWorld world, BlockHitResult blockHitResult, ItemStack weaponStack) {

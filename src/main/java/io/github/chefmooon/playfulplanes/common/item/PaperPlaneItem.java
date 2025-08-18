@@ -90,7 +90,6 @@ public class PaperPlaneItem extends Item implements ProjectileItem {
 				if (stack.willBreakNextUse()) {
 					return false;
 				} else {
-//					RegistryEntry<SoundEvent> registryEntry = (RegistryEntry)EnchantmentHelper.getEffect(stack, EnchantmentEffectComponentTypes.TRIDENT_SOUND).orElse(SoundEvents.ITEM_TRIDENT_THROW);
 					playerEntity.incrementStat(Stats.USED.getOrCreateStat(this));
 					if (world instanceof ServerWorld serverWorld) {
 						stack.damage(1, playerEntity);
@@ -104,9 +103,6 @@ public class PaperPlaneItem extends Item implements ProjectileItem {
 							paperPlaneEntity.pickupType = PersistentProjectileEntity.PickupPermission.CREATIVE_ONLY;
 						}
 						world.playSoundFromEntity((Entity)null, paperPlaneEntity, ModSounds.ENTITY_PAPER_PLANE_THROW, SoundCategory.PLAYERS, 1.0F, 1.0F);
-
-						// TODO: does sound change based on enchantment? below is legacy sound code. see above RegistryEntry<SoundEvent>
-//							world.playSoundFromEntity((Entity)null, paperPlaneEntity, (SoundEvent)registryEntry.value(), SoundCategory.PLAYERS, 1.0F, 1.0F);
 						return true;
 					}
 				}

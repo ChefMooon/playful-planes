@@ -1,6 +1,5 @@
 package io.github.chefmooon.playfulplanes.common.entity.projectile;
 
-import io.github.chefmooon.playfulplanes.PlayfulPlanes;
 import io.github.chefmooon.playfulplanes.common.data.PaperPlaneComponent;
 import io.github.chefmooon.playfulplanes.common.data.types.PaperPlaneType;
 import net.minecraft.block.BlockState;
@@ -55,7 +54,6 @@ public interface AbstractPaperPlane {
 
 		boolean fireDamageEnabled = world instanceof ServerWorld serverWorld && serverWorld.getGameRules().getBoolean(GameRules.FIRE_DAMAGE);
 
-		// TODO change to place fire, paper plane + fire charge
 		if (fireDamageEnabled && fireBlockState.isAir()) {
 			switch (side) {
 			    case UP -> world.setBlockState(firePos, Blocks.FIRE.getDefaultState(), 3);
@@ -104,12 +102,9 @@ public interface AbstractPaperPlane {
 		BlockPos blockPos = blockHitResult.getBlockPos();
 		BlockPos effectPos = blockPos.offset(side);
 
-		// TODO: Improve potion effect placement logic
 		if (side.getAxis() == Direction.Axis.Y) {
-			// Place potion effect cloud above/below the block
-			if (world.getBlockState(effectPos).isAir() &&world instanceof ServerWorld serverWorld) spawnPotionEffectCloud(serverWorld, paperPlaneComponent, owner, effectPos, blockHitResult);
+			if (world.getBlockState(effectPos).isAir() && world instanceof ServerWorld serverWorld) spawnPotionEffectCloud(serverWorld, paperPlaneComponent, owner, effectPos, blockHitResult);
 		} else {
-			// Place potion effect cloud inside the block
 			if (world instanceof ServerWorld serverWorld) spawnPotionEffectCloud(serverWorld, paperPlaneComponent, owner, blockPos, blockHitResult);
 		}
 	}
@@ -147,8 +142,16 @@ public interface AbstractPaperPlane {
 	default void tryApplyExplosionEffects(PaperPlaneComponent paperPlaneComponent, Entity entity, Entity owner, World world, EntityHitResult entityHitResult, PaperPlaneEntity paperPlaneEntity) {
 		if (entity instanceof LivingEntity livingEntity) {
 			BlockPos hitPos = new BlockPos((int) entityHitResult.getPos().getX(), (int) entityHitResult.getPos().getY(), (int) entityHitResult.getPos().getZ());
-			// TODO: improve direction of knockback
-			livingEntity.takeKnockback(1.0, paperPlaneEntity.lastRenderX, paperPlaneEntity.lastRenderY);
+
+			double dx = entity.getX() - hitPos.getX();
+			double dz = entity.getZ() - hitPos.getZ();
+			double distance = Math.sqrt(dx * dx + dz * dz);
+
+			if (distance != 0) {
+				dx /= distance;
+				dz /= distance;
+				livingEntity.takeKnockback(1.0, -dx, -dz);
+			}
 
 			if (world instanceof ServerWorld serverWorld) serverWorld.playSound(entity, hitPos, SoundEvents.ENTITY_GENERIC_EXPLODE.value(), SoundCategory.PLAYERS);
 		}
