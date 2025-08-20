@@ -19,6 +19,7 @@ public class PlayfulPlanes implements ModInitializer {
 		ModEntityTypes.register();
 		ModSounds.register();
 		ModDamageSources.register();
+		ModRecipeSerializer.register();
 
 		CommonSetup.init();
 	}

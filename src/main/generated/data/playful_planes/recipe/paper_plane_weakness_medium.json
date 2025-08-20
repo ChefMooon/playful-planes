@@ -1,0 +1,31 @@
+{
+  "type": "playful_planes:potion_shaped",
+  "category": "equipment",
+  "key": {
+    "A": "minecraft:potion",
+    "B": "playful_planes:paper_plane"
+  },
+  "pattern": [
+    " A ",
+    "ABA",
+    " A "
+  ],
+  "result": {
+    "components": {
+      "playful_planes:paper_plane_data": {
+        "type": "potion",
+        "potion_contents": {
+          "custom_effects": [
+            {
+              "duration": 1800,
+              "id": "minecraft:weakness",
+              "show_icon": true
+            }
+          ]
+        }
+      }
+    },
+    "count": 1,
+    "id": "playful_planes:paper_plane"
+  }
+}

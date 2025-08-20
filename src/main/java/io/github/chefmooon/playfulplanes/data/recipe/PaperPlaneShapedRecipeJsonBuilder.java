@@ -123,8 +123,13 @@ public class PaperPlaneShapedRecipeJsonBuilder implements CraftingRecipeJsonBuil
 		this.criteria.forEach(builder::criterion);
 		ItemStack itemStack = new ItemStack(this.output, this.count);
 		itemStack.set(ModDataComponentTypes.PAPER_PLANE_COMPONENT, new PaperPlaneComponent(paperPlaneType, potionContentsComponent != null ? Optional.of(potionContentsComponent) : Optional.empty()));
-		ShapedRecipe shapedRecipe = new ShapedRecipe((String)Objects.requireNonNullElse(this.group, ""), CraftingRecipeJsonBuilder.toCraftingCategory(this.category), rawShapedRecipe, itemStack, this.showNotification);
-		exporter.accept(recipeKey, shapedRecipe, builder.build(recipeKey.getValue().withPrefixedPath("recipes/" + this.category.getName() + "/")));
+		if (paperPlaneType == PaperPlaneType.POTION) {
+			ModPotionShapedRecipe modPotionShapedRecipe = new ModPotionShapedRecipe((String)Objects.requireNonNullElse(this.group, ""), CraftingRecipeJsonBuilder.toCraftingCategory(this.category), rawShapedRecipe, itemStack, this.showNotification);
+			exporter.accept(recipeKey, modPotionShapedRecipe, builder.build(recipeKey.getValue().withPrefixedPath("recipes/" + this.category.getName() + "/")));
+		} else {
+			ShapedRecipe shapedRecipe = new ShapedRecipe((String)Objects.requireNonNullElse(this.group, ""), CraftingRecipeJsonBuilder.toCraftingCategory(this.category), rawShapedRecipe, itemStack, this.showNotification);
+			exporter.accept(recipeKey, shapedRecipe, builder.build(recipeKey.getValue().withPrefixedPath("recipes/" + this.category.getName() + "/")));
+		}
 	}
 
 	private RawShapedRecipe validate(RegistryKey<Recipe<?>> recipeKey) {
