@@ -57,6 +57,17 @@ public class ModRecipeGenerator extends FabricRecipeProvider {
 					.criterion(RecipeGenerator.hasItem(Items.FIRE_CHARGE), RecipeGenerator.conditionsFromPredicates(ItemPredicate.Builder.create().items(wrapperLookup.getOrThrow(RegistryKeys.ITEM), Items.FIRE_CHARGE, ModItems.PAPER_PLANE)))
 					.offerTo(recipeExporter, RegistryKey.of(RegistryKeys.RECIPE, TextUtils.res("flammable_" + RecipeGenerator.getRecipeName(ModItems.PAPER_PLANE))));
 
+				// TNT Paper Plane
+				PaperPlaneShapedRecipeJsonBuilder.create(wrapperLookup.getOrThrow(RegistryKeys.ITEM), RecipeCategory.COMBAT, ModItems.PAPER_PLANE)
+					.pattern(" A ")
+					.pattern("ABA")
+					.pattern(" A ")
+					.input('A', Items.TNT)
+					.input('B', ModItems.PAPER_PLANE)
+					.type(PaperPlaneType.TNT)
+					.criterion(RecipeGenerator.hasItem(Items.TNT), RecipeGenerator.conditionsFromPredicates(ItemPredicate.Builder.create().items(wrapperLookup.getOrThrow(RegistryKeys.ITEM), Items.TNT, ModItems.PAPER_PLANE)))
+					.offerTo(recipeExporter, RegistryKey.of(RegistryKeys.RECIPE, TextUtils.res("explosive_" + RecipeGenerator.getRecipeName(ModItems.PAPER_PLANE))));
+
 				for (ModPotions potion : ModPotions.values()) {
 					// Potion Paper Plane
 					PotionContentsComponent potionContentsComponent = potion(List.of(potion.statusEffectInstance));
