@@ -1,26 +1,26 @@
 {
 	"entity.paper_plane.throw": {
-		"subtitle": "sound.playful_planes.paper_plane.throw",
+		"subtitle": "playful_planes.subtitle.paper_plane.throw",
 		"sounds": [
 			"playful_planes:paper_plane_throw_01",
 			"playful_planes:paper_plane_throw_02"
 		]
 	},
 	"entity.paper_plane.hit_ground": {
-		"subtitle": "sound.playful_planes.paper_plane.hit_ground",
+		"subtitle": "playful_planes.subtitle.paper_plane.hit_ground",
 		"sounds": [
 			"playful_planes:paper_plane_hit_ground_01"
 		]
 	},
 	"entity.paper_plane.hit": {
-		"subtitle": "sound.playful_planes.paper_plane.hit",
+		"subtitle": "playful_planes.subtitle.paper_plane.hit",
 		"sounds": [
 			"playful_planes:paper_plane_hit_01",
 			"playful_planes:paper_plane_hit_02"
 		]
 	},
 	"entity.paper_plane.return": {
-		"subtitle": "sound.playful_planes.paper_plane.return",
+		"subtitle": "playful_planes.subtitle.paper_plane.return",
 		"sounds": [
 			"playful_planes:paper_plane_return"
 		]

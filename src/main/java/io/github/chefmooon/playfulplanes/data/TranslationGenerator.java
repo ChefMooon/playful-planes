@@ -17,6 +17,7 @@ public class TranslationGenerator extends FabricLanguageProvider {
 	@Override
 	public void generateTranslations(RegistryWrapper.WrapperLookup wrapperLookup, TranslationBuilder translationBuilder) {
 		String MOD_ID = PlayfulPlanes.MOD_ID;
+		String SUBTITLE = MOD_ID + ".subtitle.";
 		String PAPER_PLANE_TYPE = MOD_ID + ".paper_plane.type.";
 
 		translationBuilder.add("itemGroup." + MOD_ID, "Playful Planes");
@@ -27,6 +28,11 @@ public class TranslationGenerator extends FabricLanguageProvider {
 		translationBuilder.add(PAPER_PLANE_TYPE + "fire", "Flammable");
 		translationBuilder.add(PAPER_PLANE_TYPE + "firework", "Firework");
 		translationBuilder.add(PAPER_PLANE_TYPE + "tnt", "TNT");
+
+		translationBuilder.add(SUBTITLE + "paper_plane.throw", "Paper Plane flies");
+		translationBuilder.add(SUBTITLE + "paper_plane.hit_ground", "Paper Plane crunches");
+		translationBuilder.add(SUBTITLE + "paper_plane.hit", "Paper Plane cuts");
+		translationBuilder.add(SUBTITLE + "paper_plane.return", "Paper Plane returns");
 
 		translationBuilder.add("death.attack.playful_planes.paper_plane", "%1$s failed the paper plane safety test");
 
